@@ -16,6 +16,7 @@ struct ContentView: View {
     
     var body: some View {
         NavigationView {
+            //MARK:  -TO DO  Place Contents on View Cell
             List{
                // NavigationLink()
                 ForEach(api.mock, id: \.id) { user in
@@ -48,11 +49,13 @@ struct ContentView: View {
         }
         
         .sheet(isPresented: $showAdd) {
-            AddUser(mocku: Mock(id: "", name: "", status: ""))
+            AddUser(user: Mock(id: "", name: "", status: ""))
         }
     }
     
     //MARK: Delete
+    
+    //MARK: -Handle Delete index
     func deleteUser(indexSet: IndexSet){
         withAnimation {
             let id = indexSet.map{ api.mock[$0].id }

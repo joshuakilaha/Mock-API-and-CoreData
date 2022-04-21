@@ -17,7 +17,8 @@ struct AddUser: View {
         TextField("Status", text: $user.status)
         
         Button {
-            api.Mock_Post_User(mocku: user)
+            //MARK:  -TO DO add -> (Dismiss to Content View)
+            api.Mock_Post_User(user: user)
         } label: {
             Text("Add")
         }

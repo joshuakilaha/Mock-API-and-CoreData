@@ -23,7 +23,8 @@ struct EditUser: View {
         TextField("Status", text: $user.status)
         
         Button {
-            api.Mock_Get_ALL() //TO DO UPDATE USER
+            //MARK:  -TO DO add -> (Dismiss to Content View)
+            
             api.Mock_UPDATE_User(user: user, id: user.id)
         } label: {
             Label("Update", systemImage: "person.crop.circle.badge.checkmark")
