@@ -9,54 +9,30 @@ import SwiftUI
 
 struct UserCell: View {
     
-    @StateObject var api = ApiCall()
+    @State var user: Mock
     
-    @State var showView = false
+    @State private var name = ""
+    @State private var status: Bool = true
     
     var body: some View {
-        NavigationView {
-            List{
-                ForEach(api.mock, id: \.id) { user in
-                    NavigationLink(destination: EditUser(user: user)) {
-                        VStack(alignment: .leading, spacing: 10){
-                            Text(user.name)
-                                .font(.title2)
-                            if user.status == true {
-                                Text("Active")
-                                    .foregroundColor(.green)
-                            } else {
-                                Text("Offline")
-                                    .foregroundColor(.red)
-                            }
-                            
-                        }
-                    }
-                } .onDelete(perform: deleteUser)
+        
+        VStack(alignment: .leading, spacing: 10 ){
+            Text(user.name)
+                .font(.title2)
+                .fontWeight(.semibold)
+            if user.status == true {
+                Text("Active")
+                    .font(.title3)
+                    .fontWeight(.light)
+                    .italic()
+                    .foregroundColor(.green)
+            } else {
+                Text("Offline")
+                    .foregroundColor(.red)
+                    .font(.title3)
+                    .fontWeight(.light)
+                    .italic()
             }
-            .refreshable {
-                api.Mock_Get_ALL()
-            }
-            .navigationTitle("Users")
-        }
-        .onAppear{
-            api.Mock_Get_ALL()
-        }
-        .navigationViewStyle(.stack)
-        
-        .sheet(isPresented: $showView) {
-            AddUser(user: Mock(id: "", name: "", status: true))
-        }
-        
-    }
-    //MARK: Detele Item
-    //MARK: -To Do -> Handle Delete index
-    private func deleteUser(indexSet: IndexSet) {
-        
-        let id = indexSet.map {api.mock[$0].id}
-        
-        DispatchQueue.main.async {
-            let item = id
-            api.Mock_DELETE_User1(id: item)
         }
     }
     
@@ -64,6 +40,6 @@ struct UserCell: View {
 
 struct UserCell_Previews: PreviewProvider {
     static var previews: some View {
-        UserCell()
+        UserCell(user: Mock(id: "4", name: "John Cena", status: false))
     }
 }
