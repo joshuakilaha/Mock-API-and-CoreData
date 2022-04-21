@@ -113,7 +113,7 @@ class ApiCall: ObservableObject {
     
     //MARK: DELETE Request
     
-    func Mock_DELETE_User1(id: [String]) {
+    func Mock_DELETE_User(id: [String]) {
 
         print(id)
         let joinId = id.joined(separator: "")
@@ -147,34 +147,3 @@ class ApiCall: ObservableObject {
     }
     
 }
-
-
-//func Mock_DELETE_User(paramiters: [String: Any]) {
-//    guard let url = URL(string: "https://625f27a5873d6798e2b38701.mockapi.io/details") else {
-//        print("Invalid URL!!")
-//        return
-//    }
-//
-//    let data = try! JSONSerialization.data(withJSONObject: paramiters)
-//
-//    var request = URLRequest(url: url)
-//    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-//    request.httpMethod = "DELETE"
-//    request.httpBody = data // Set HTTP Request Body
-//
-//    // Perform HTTP Request
-//    URLSession.shared.dataTask(with: request){
-//        (data, response, error) in
-//        print(response as Any)
-//        if let error = error {
-//            print(error)
-//            return
-//        }
-//        guard let data = data else{
-//            return
-//        }
-//        print(data, String(data: data, encoding: .utf8) ?? "*unknown encoding*")
-//
-//    }.resume()
-//
-//}

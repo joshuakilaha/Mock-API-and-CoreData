@@ -53,8 +53,7 @@ struct ContentView: View {
             let id = indexSet.map{ api.mock[$0].id }
             
             DispatchQueue.main.async {
-                //let item = id
-                api.Mock_DELETE_User1(id: id)
+                api.Mock_DELETE_User(id: id)
                 self.api.Mock_Get_ALL()
             }
         }
