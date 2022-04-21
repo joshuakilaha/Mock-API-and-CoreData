@@ -33,7 +33,13 @@ struct UserCell: View {
                     }
                 } .onDelete(perform: deleteUser)
             }
+            .refreshable {
+                api.Mock_Get_ALL()
+            }
             .navigationTitle("Users")
+        }
+        .onAppear{
+            api.Mock_Get_ALL()
         }
         .navigationViewStyle(.stack)
         
@@ -43,6 +49,7 @@ struct UserCell: View {
         
     }
     //MARK: Detele Item
+    //MARK: -To Do -> Handle Delete index
     private func deleteUser(indexSet: IndexSet) {
         
         let id = indexSet.map {api.mock[$0].id}
