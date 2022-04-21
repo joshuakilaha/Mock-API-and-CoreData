@@ -10,28 +10,17 @@ import SwiftUI
 struct AddUser: View {
     
     @StateObject var api = ApiCall()
-     @State var mocku: Mock
+     @State var user: Mock
     
     var body: some View {
-        
-      //  TextField("Id", text: $mocku.userid)
-        TextField("Name", text: $mocku.name)
-        TextField("Status", text: $mocku.status)
+        TextField("Name", text: $user.name)
+        TextField("Status", text: $user.status)
         
         Button {
-            //api.Mock_Post_User(mocku: mocku)
-            api.Mock_Post_User(mocku: mocku)
-           // api.upload()
+            api.Mock_Post_User(mocku: user)
         } label: {
             Text("Add")
         }
 
     }
 }
-
-
-//struct AddUser_Previews: PreviewProvider {
-//    static var previews: some View {
-//        AddUser(mocku: Mock(userid: "1", name: "yusuf", status: "ok"))
-//    }
-//}

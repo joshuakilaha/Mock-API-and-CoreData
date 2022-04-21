@@ -47,9 +47,7 @@ struct ContentView: View {
             api.Mock_Get_ALL()
         }
         
-
         .sheet(isPresented: $showAdd) {
-
             AddUser(mocku: Mock(id: "", name: "", status: ""))
         }
     }
