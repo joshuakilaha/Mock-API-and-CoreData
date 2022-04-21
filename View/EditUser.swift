@@ -9,27 +9,41 @@ import SwiftUI
 
 struct EditUser: View {
     
+    @Environment(\.dismiss) var dismiss
+    
     @StateObject var api = ApiCall()
     @State var user: Mock
     
-   // @State var data = [Mock]()
+    @State private var statusToggle: Bool = true
     
     @State var name = ""
     @State var status = ""
     
     var body: some View {
-        
-        TextField("Name", text: $user.name)
-      //  TextField("Status", text: $user.status)
-        
-        Button {
-            //MARK:  -TO DO add -> (Dismiss to Content View)
+        NavigationView {
             
-            api.Mock_UPDATE_User(user: user, id: user.id)
-        } label: {
-            Label("Update", systemImage: "person.crop.circle.badge.checkmark")
-        }
+            Form {
+                Section(header: Text("Edit User")) {
+                    TextField("Name", text: $user.name)
+                    
+                    Toggle(isOn: $user.status) {
+                        Text("Status")
+                    }
+                }
+            }
 
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    //MARK:  -TO DO add -> (Dismiss to Content View)
+                    api.Mock_UPDATE_User(user: user, id: user.id)
+                    dismiss()
+                } label: {
+                    Label("Update", systemImage: "person.crop.circle.badge.checkmark")
+                }
+            }
+        }
     }
     
 }
