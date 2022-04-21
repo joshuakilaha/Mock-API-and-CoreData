@@ -9,19 +9,42 @@ import SwiftUI
 
 struct AddUser: View {
     
+    @Environment(\.dismiss) var dismiss
+    
     @StateObject var api = ApiCall()
-     @State var user: Mock
+    @State var user: Mock
+    
+    @State private var statusToggle: Bool = true
     
     var body: some View {
-        TextField("Name", text: $user.name)
-        TextField("Status", text: $user.status)
-        
-        Button {
-            //MARK:  -TO DO add -> (Dismiss to Content View)
-            api.Mock_Post_User(user: user)
-        } label: {
-            Text("Add")
+        VStack{
+            HStack {
+                Button {
+                   dismiss()
+                } label: {
+                    Text("Cancel")
+                }
+                Spacer()
+                
+                Button {
+                    //MARK:  -TO DO add -> (Dismiss to Content View)
+                    api.Mock_Post_User(user: user)
+                    dismiss()
+                } label: {
+                    Text("Add")
+                }
+            }
+            .padding()
+            
+            Form {
+                Section {
+                    TextField("Name", text: $user.name)
+                    Toggle(isOn: $statusToggle) {
+                        Text("Status")
+                    }
+                    
+                }
+            }
         }
-
     }
 }

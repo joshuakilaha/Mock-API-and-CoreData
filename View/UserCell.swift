@@ -21,11 +21,11 @@ struct UserCell: View {
                         VStack(alignment: .leading, spacing: 10){
                             Text(user.name)
                                 .font(.title2)
-                            if user.status == "Active" {
-                                Text(user.status)
+                            if user.status == true {
+                                Text("Active")
                                     .foregroundColor(.green)
                             } else {
-                                Text(user.status)
+                                Text("Offline")
                                     .foregroundColor(.red)
                             }
                             
@@ -38,7 +38,7 @@ struct UserCell: View {
         .navigationViewStyle(.stack)
         
         .sheet(isPresented: $showView) {
-            AddUser(user: Mock(id: "", name: "", status: ""))
+            AddUser(user: Mock(id: "", name: "", status: true))
         }
         
     }

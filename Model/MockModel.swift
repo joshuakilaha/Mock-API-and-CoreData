@@ -10,5 +10,5 @@ import Foundation
 struct Mock: Codable {
     var id: String
     var name: String
-    var status: String
+    var status: Bool
 }

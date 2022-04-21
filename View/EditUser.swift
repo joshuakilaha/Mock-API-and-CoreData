@@ -20,7 +20,7 @@ struct EditUser: View {
     var body: some View {
         
         TextField("Name", text: $user.name)
-        TextField("Status", text: $user.status)
+      //  TextField("Status", text: $user.status)
         
         Button {
             //MARK:  -TO DO add -> (Dismiss to Content View)
@@ -36,6 +36,6 @@ struct EditUser: View {
 
 struct EditUser_Previews: PreviewProvider {
     static var previews: some View {
-        EditUser(user: Mock(id: "1", name: "john", status: "Active"))
+        EditUser(user: Mock(id: "1", name: "john", status: true ))
     }
 }
