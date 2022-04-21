@@ -14,8 +14,6 @@ struct AddUser: View {
     @StateObject var api = ApiCall()
     @State var user: Mock
     
-    @State private var statusToggle: Bool = true
-    
     var body: some View {
         VStack{
             HStack {
@@ -39,7 +37,7 @@ struct AddUser: View {
             Form {
                 Section {
                     TextField("Name", text: $user.name)
-                    Toggle(isOn: $statusToggle) {
+                    Toggle(isOn: $user.status) {
                         Text("Status")
                     }
                     
