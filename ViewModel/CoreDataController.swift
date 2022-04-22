@@ -13,7 +13,7 @@ class CoreDataController: ObservableObject {
 
     static let shared = CoreDataController()
     
-    @Published var user = [Mock]()
+    @Published var mock = [Mock]()
     @StateObject var api = ApiCall()
     
     //let container = NSPersistentContainer(name: "UserDataModel")
@@ -37,9 +37,28 @@ class CoreDataController: ObservableObject {
      }
  
     
+    func addUser(context: NSManagedObjectContext){
+        
+//        user.id = mock.id
+//        user.name = mock.name
+//        user.status = mock.status
+        
+        mock.forEach { (data) in
+            let user = User(context: context)
+            user.id = data.id
+            user.name = data.name
+            user.status = data.status
+        }
+        
+        saveUser(context: context)
+        
+    }
+    
+    
     func saveUserCoreData(context: NSManagedObjectContext) {
         
-        user.forEach { (data) in
+        
+        mock.forEach { (data) in
             let entity = User(context: context)
             entity.id = data.id
             entity.name = data.name
@@ -56,7 +75,14 @@ class CoreDataController: ObservableObject {
         }
     }
     
-    
+    func saveUser(context: NSManagedObjectContext) {
+        do {
+            try context.save()
+            print("Note Saved Successfully")
+        } catch {
+            print("Unable to save the Note")
+        }
+    }
     
     
     func save() throws {
@@ -74,7 +100,6 @@ class CoreDataController: ObservableObject {
             //MARK: To Do Add Remove func
             removeAllData()
             
-            
             for mock in userApi {
                 try await backgroundContext.perform {
                     let user = User(context: self.viewContext)
@@ -91,6 +116,7 @@ class CoreDataController: ObservableObject {
     func removeAllData() {
          let request: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "User")
          let deleteRequest = NSBatchDeleteRequest(fetchRequest: request)
+        
          
          do {
              try viewContext.execute(deleteRequest)

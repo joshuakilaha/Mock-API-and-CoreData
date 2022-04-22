@@ -14,9 +14,9 @@ struct ContentView: View {
     //var userD: User
     
     //Fetch from CoreData
-//    @FetchRequest(entity: User.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \User.id, ascending: true)]) var result: FetchedResults<User>
+    @FetchRequest(entity: User.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \User.id, ascending: true)]) var results: FetchedResults<User>
     
-    @FetchRequest(sortDescriptors: [SortDescriptor(\.name, order: .reverse)]) var results: FetchedResults<User>
+   // @FetchRequest(sortDescriptors: [SortDescriptor(\.name, order: .reverse)]) var results: FetchedResults<User>
 
     @StateObject var api = ApiCall()
 
@@ -24,11 +24,11 @@ struct ContentView: View {
     
     var body: some View {
         NavigationView {
-            List{
+            List {
                 ForEach(results, id: \.id) { user in
                   //  NavigationLink(destination: EditUser(user: user)) {
-                       // UserCell(user: user) //user cell
-                        UserCell(id: user.id!, name: user.name!, status: user.status)
+                   //     UserCell(user: user) //user cell
+                        UserCell1(id: user.id!, name: user.name!, status: user.status)
                  //   }
                 }
                 .onDelete(perform: deleteUser) //Delete item on list
@@ -36,6 +36,10 @@ struct ContentView: View {
             .refreshable {
                 api.Mock_Get_ALL(context: dataContext)
             }
+//            ForEach(results, id: \.id) { result in
+//                UserCell1(id: result.id ?? "4" , name: result.name ?? "Owen", status: result.status)
+//                let _ = print("\(String(describing: result.name!))")
+//            }
             
             .navigationTitle("Users")
             .toolbar {
@@ -50,7 +54,7 @@ struct ContentView: View {
             }
         } .navigationViewStyle(.stack)
         .onAppear{
-            api.Mock_Get_ALL(context: dataContext)
+          api.Mock_Get_ALL(context: dataContext)
         }
         .sheet(isPresented: $showAdd) {
             AddUser(user: Mock(id: "", name: "", status: false))

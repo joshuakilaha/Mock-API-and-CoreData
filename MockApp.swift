@@ -9,8 +9,22 @@ import SwiftUI
 
 @main
 struct MockApp: App {
-    @StateObject private var userCoreDataController = CoreDataController()
     
+    init(){
+        Task { [self] in
+            await self.importData()
+        }
+    }
+    
+    private func importData() async {
+        do {
+            try await CoreDataController.shared.importUserCore()
+        } catch {
+            print(error)
+        }
+    }
+    
+    @StateObject private var userCoreDataController = CoreDataController()
     
     var body: some Scene {
         WindowGroup {

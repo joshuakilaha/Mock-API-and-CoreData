@@ -13,7 +13,7 @@ class ApiCall: ObservableObject {
      var userCoreData = CoreDataController()
     
     @Published var mock = [Mock]()
-    
+    @Published var userD = [User]()
     
     enum NetworkError: Error {
         case badUrl
@@ -36,10 +36,12 @@ class ApiCall: ObservableObject {
             
             do {
                 let mockDecoded = try JSONDecoder().decode([Mock].self, from: data)
+               
                 
                 DispatchQueue.main.async {
                     self.mock = mockDecoded
-                    self.userCoreData.saveUserCoreData(context: context)
+                  //  self.userCoreData.saveUserCoreData(context: context)
+                    self.userCoreData.addUser(context: context)
                     
                 }
                 
