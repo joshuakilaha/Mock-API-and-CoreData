@@ -9,9 +9,13 @@ import SwiftUI
 
 @main
 struct MockApp: App {
+    @StateObject private var userCoreDataController = CoreDataController()
+    
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(\.managedObjectContext, userCoreDataController.container.viewContext)
         }
     }
 }

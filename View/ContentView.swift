@@ -8,6 +8,15 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @Environment(\.managedObjectContext) var dataContext
+    
+    //var userD: User
+    
+    //Fetch from CoreData
+//    @FetchRequest(entity: User.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \User.id, ascending: true)]) var result: FetchedResults<User>
+    
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.name, order: .reverse)]) var results: FetchedResults<User>
 
     @StateObject var api = ApiCall()
 
@@ -16,15 +25,16 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             List{
-                ForEach(api.mock, id: \.id) { user in
-                    NavigationLink(destination: EditUser(user: user)) {
-                        UserCell(user: user) //user cell
-                    }
+                ForEach(results, id: \.id) { user in
+                  //  NavigationLink(destination: EditUser(user: user)) {
+                       // UserCell(user: user) //user cell
+                        UserCell(id: user.id!, name: user.name!, status: user.status)
+                 //   }
                 }
                 .onDelete(perform: deleteUser) //Delete item on list
             }
             .refreshable {
-                api.Mock_Get_ALL()
+                api.Mock_Get_ALL(context: dataContext)
             }
             
             .navigationTitle("Users")
@@ -40,7 +50,7 @@ struct ContentView: View {
             }
         } .navigationViewStyle(.stack)
         .onAppear{
-            api.Mock_Get_ALL()
+            api.Mock_Get_ALL(context: dataContext)
         }
         .sheet(isPresented: $showAdd) {
             AddUser(user: Mock(id: "", name: "", status: false))
@@ -54,7 +64,7 @@ struct ContentView: View {
             
             DispatchQueue.main.async {
                 api.Mock_DELETE_User(id: id)
-                self.api.Mock_Get_ALL()
+                self.api.Mock_Get_ALL(context: dataContext)
             }
         }
         

@@ -6,14 +6,23 @@
 //
 
 import Foundation
+import CoreData
 
 class ApiCall: ObservableObject {
+    
+     var userCoreData = CoreDataController()
     
     @Published var mock = [Mock]()
     
     
+    enum NetworkError: Error {
+        case badUrl
+        case invalidRequest
+    }
+    
+    
     //MARK: GET Request
-    func Mock_Get_ALL(){
+    func Mock_Get_ALL(context: NSManagedObjectContext){
         
         guard let url = URL(string: "https://625f27a5873d6798e2b38701.mockapi.io/details") else {
             print("Invalid URL!!")
@@ -30,6 +39,8 @@ class ApiCall: ObservableObject {
                 
                 DispatchQueue.main.async {
                     self.mock = mockDecoded
+                    self.userCoreData.saveUserCoreData(context: context)
+                    
                 }
                 
             } catch {
@@ -40,6 +51,49 @@ class ApiCall: ObservableObject {
         }
         task.resume()
     }
+    
+    func Mock_Get_ALL1() async throws -> [Mock] {
+
+        guard let url = URL(string: "https://625f27a5873d6798e2b38701.mockapi.io/details") else {
+            print("Invalid URL!!")
+            throw NetworkError.badUrl
+        }
+        
+        let (data, _) = try await URLSession.shared.data(from: url)
+        
+        let mockDecoded = try? JSONDecoder().decode([Mock].self, from: data)
+        return mockDecoded ?? []
+        
+    }
+        
+
+//        let task = URLSession.shared.dataTask(with: url) { data, _, error in
+//            guard let data = data, error == nil else {
+//                return
+//            }
+//
+//            DispatchQueue.main.async {
+//                let mockDecoded = try? JSONDecoder().decode([Mock].self, from: data)
+//                self.mock = return mockDecoded
+//               // return mockDecoded
+//            }
+
+//
+//            guard let url = url else {
+//                throw NetworkError.badUrl
+//            }
+//
+//            let (data, response) = try await URLSession.shared.data(from: url)
+//
+//            guard (response as? HTTPURLResponse)?.statusCode == 200 else {
+//                throw NetworkError.invalidRequest
+//            }
+//
+//            let vegetables = try? JSONDecoder().decode([VegetableDTO].self, from: data)
+//            return vegetables ?? []
+//        }
+//
+
     
     //MARK: POST Request
     
