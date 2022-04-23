@@ -26,10 +26,10 @@ struct ContentView: View {
         NavigationView {
             List {
                 ForEach(results, id: \.id) { user in
-                  //  NavigationLink(destination: EditUser(user: user)) {
+                    NavigationLink(destination: EditUser(user: user)) {
                    //     UserCell(user: user) //user cell
                         UserCell1(id: user.id!, name: user.name!, status: user.status)
-                 //   }
+                   }
                 }
                 .onDelete(perform: deleteUser) //Delete item on list
             }
@@ -76,7 +76,7 @@ struct ContentView: View {
             
             DispatchQueue.main.async {
                 api.Mock_DELETE_User(id: id)
-                self.api.Mock_Get_ALL(context: dataContext)
+               // self.api.Mock_Get_ALL(context: dataContext)
             }
         }
         

@@ -22,7 +22,7 @@ class ApiCall: ObservableObject {
     
     
     //MARK: GET Request
-    func Mock_Get_ALL(context: NSManagedObjectContext){
+    func Mock_Get_ALL(context: NSManagedObjectContext) async{
         
         guard let url = URL(string: "https://625f27a5873d6798e2b38701.mockapi.io/details") else {
             print("Invalid URL!!")
@@ -30,24 +30,24 @@ class ApiCall: ObservableObject {
         }
         
         let task = URLSession.shared.dataTask(with: url) { data, _, error in
-            guard let data = data, error == nil else {
+            guard let data1 = data, error == nil else {
                 return
             }
             
             do {
-                let mockDecoded = try JSONDecoder().decode([Mock].self, from: data)
-               
+                let mockDecoded = try JSONDecoder().decode([Mock].self, from: data1)
+                
                 
                 DispatchQueue.main.async {
                     self.mock = mockDecoded
-                  //  self.userCoreData.saveUserCoreData(context: context)
+                    //  self.userCoreData.saveUserCoreData(context: context)
                     self.userCoreData.addUser(context: context)
                     
                 }
                 
             } catch {
                 //print("Something went wrong")
-               // print(error.localizedDescription)
+                // print(error.localizedDescription)
                 debugPrint(error)
             }
         }
