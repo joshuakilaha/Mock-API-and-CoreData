@@ -34,7 +34,10 @@ struct ContentView: View {
                 .onDelete(perform: deleteUser) //Delete item on list
             }
             .refreshable {
-                api.Mock_Get_ALL(context: dataContext)
+               // api.Mock_Get_ALL(context: dataContext)
+                Task { [self] in
+                    await self.importData()
+                }
             }
 //            ForEach(results, id: \.id) { result in
 //                UserCell1(id: result.id ?? "4" , name: result.name ?? "Owen", status: result.status)
@@ -53,8 +56,13 @@ struct ContentView: View {
                 }
             }
         } .navigationViewStyle(.stack)
-        .onAppear{
-          api.Mock_Get_ALL(context: dataContext)
+        .onAppear  {
+          //api.Mock_Get_ALL(context: dataContext)
+            //await importData()
+            Task { [self] in
+                await self.importData()
+            }
+            
         }
         .sheet(isPresented: $showAdd) {
             AddUser(user: Mock(id: "", name: "", status: false))
@@ -72,6 +80,15 @@ struct ContentView: View {
             }
         }
         
+    }
+    
+    private func importData() async {
+        do {
+        try await CoreDataController().importUserCore()
+        } catch {
+           
+            print("Unable to Import Data to Core Data\(error.localizedDescription)")
+        }
     }
 
 }
