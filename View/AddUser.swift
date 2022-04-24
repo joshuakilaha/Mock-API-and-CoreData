@@ -12,7 +12,7 @@ struct AddUser: View {
     @Environment(\.dismiss) var dismiss
     
     @StateObject var api = ApiCall()
-    @State var user: Mock
+    @State var user: User
     
     var body: some View {
         VStack{
@@ -36,7 +36,7 @@ struct AddUser: View {
             
             Form {
                 Section {
-                    TextField("Name", text: $user.name)
+                   // TextField("Name", text: $user.name)
                     Toggle(isOn: $user.status) {
                         Text("Status")
                     }

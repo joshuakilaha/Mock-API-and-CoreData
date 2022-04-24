@@ -95,11 +95,28 @@ class ApiCall: ObservableObject {
 //            return vegetables ?? []
 //        }
 //
+    
+    
+//    func postUser() async throws -> [Mock] -> {
+//        guard let url = URL(string: "https://625f27a5873d6798e2b38701.mockapi.io/details") else {
+//            throw NetworkError.badUrl
+//            print("Invalid URL!!")
+//
+//        }
+//
+//        var request = URLRequest(url: url)
+//        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+//        request.httpMethod = "POST"
+//        request.httpBody =  // Set HTTP Request Body
+//
+//
+//        let (data, _) try await URLSession.shared.dataTask(with: request)
+//    }
 
     
     //MARK: POST Request
     
-    func Mock_Post_User(user: Mock) {
+    func Mock_Post_User(user: User) {
         guard let url = URL(string: "https://625f27a5873d6798e2b38701.mockapi.io/details") else {
             print("Invalid URL!!")
             return
@@ -134,7 +151,8 @@ class ApiCall: ObservableObject {
     
     //MARK: UPDATE Request
     
-    func Mock_UPDATE_User(user: Mock, id: String) {
+    func Mock_UPDATE_User(user: User, id: String) {
+        print("ID is: \(String(describing: id))")
         guard let url = URL(string: "https://625f27a5873d6798e2b38701.mockapi.io/details/\(id)") else {
             print("Invalid URL!!")
             return
@@ -150,20 +168,24 @@ class ApiCall: ObservableObject {
         request.httpMethod = "PUT"
         request.httpBody = mockEncoded // Set HTTP Request Body
         
+    
+        
         // Perform HTTP Request
-        URLSession.shared.dataTask(with: request){
+            URLSession.shared.dataTask(with: request) {
             (data, response, error) in
             print(response as Any)
+                
             if let error = error {
                 print(error)
                 return
             }
-            guard let data = data else{
+            guard let data = data else {
                 return
             }
             print(data, String(data: data, encoding: .utf8) ?? "*unknown encoding*")
             
-        }.resume()
+            }
+        .resume()
     }
     
     

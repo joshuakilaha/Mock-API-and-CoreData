@@ -39,10 +39,6 @@ class CoreDataController: ObservableObject {
     
     func addUser(context: NSManagedObjectContext){
         
-//        user.id = mock.id
-//        user.name = mock.name
-//        user.status = mock.status
-        
         mock.forEach { (data) in
             let user = User(context: context)
             user.id = data.id
@@ -111,6 +107,11 @@ class CoreDataController: ObservableObject {
             }
             
         
+    }
+    
+    func editUser(context: NSManagedObjectContext, user: User) async throws {
+        
+        //let 
     }
     
     func removeAllData() {

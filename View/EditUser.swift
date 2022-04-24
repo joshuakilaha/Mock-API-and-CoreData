@@ -18,7 +18,8 @@ struct EditUser: View {
     @State private var status: Bool = true
    // @State var user: Mock
     
-    var user: FetchedResults<User>.Element
+   // var user: FetchedResults<User>.Element
+    @State var user: User
     
     @State private var statusToggle: Bool = true
     
@@ -30,24 +31,27 @@ struct EditUser: View {
             
             Form {
                 Section(header: Text("Edit User")) {
-                    TextField("Name", text: $name)
+                    //TextField("Name", text: $user.name)
+                    TextField("Name", text: $user.name)
                     
-                    Toggle(isOn: $status) {
+                    Toggle(isOn: $user.status) {
                         Text("Status")
                     }
                 }
             }
 
-        } .onAppear{
-            id = user.id!
-            name = user.name!
+        }
+        .onAppear{
+            id = user.id
+            name = user.name
             status = user.status
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
                     //MARK:  -TO DO add -> (Dismiss to Content View)
-                   // api.Mock_UPDATE_User(user: user, id: user.id!)
+                    //api.Mock_UPDATE_User(user: user, id: user.id!)
+                    api.Mock_UPDATE_User(user: user, id: id)
                     dismiss()
                 } label: {
                     Label("Update", systemImage: "person.crop.circle.badge.checkmark")

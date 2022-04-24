@@ -28,7 +28,7 @@ struct ContentView: View {
                 ForEach(results, id: \.id) { user in
                     NavigationLink(destination: EditUser(user: user)) {
                    //     UserCell(user: user) //user cell
-                        UserCell1(id: user.id!, name: user.name!, status: user.status)
+                        UserCell1(id: user.id, name: user.name, status: user.status)
                    }
                 }
                 .onDelete(perform: deleteUser) //Delete item on list
@@ -65,7 +65,7 @@ struct ContentView: View {
             
         }
         .sheet(isPresented: $showAdd) {
-            AddUser(user: Mock(id: "", name: "", status: false))
+          //  AddUser(user: Mock(id: "", name: "", status: false))
         }
     }
     
