@@ -248,6 +248,7 @@ class ApiCall: ObservableObject {
         print(id)
         let joinId = id.joined(separator: "")
         print(joinId)
+        
         //let user = 5
         //let id = 3
         guard let url = URL(string: "https://625f27a5873d6798e2b38701.mockapi.io/details/\(joinId)") else {
@@ -275,5 +276,4 @@ class ApiCall: ObservableObject {
 
 
     }
-    
 }

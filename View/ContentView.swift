@@ -38,7 +38,7 @@ struct ContentView: View {
 //                Task { [self] in
 //                    await self.importData()
 //                }
-                
+                CoreDataController().removeAllData()
                 api.Mock_Get_ALL()
             }
 //            ForEach(results, id: \.id) { result in
@@ -64,25 +64,33 @@ struct ContentView: View {
 //            Task { [self] in
 //                await self.importData()
 //            }
+            CoreDataController().removeAllData()
             api.Mock_Get_ALL()
             
         }
         .sheet(isPresented: $showAdd) {
           //  AddUser(user: Mock(id: "", name: "", status: false))
-          AddUser(user: User(context: dataContext))
+           // AddUser(user: User(from: id: "", name: "", status: false))
         }
     }
     
     //MARK: Delete
     func deleteUser(indexSet: IndexSet){
         withAnimation {
-            let id = indexSet.map{ api.mock[$0].id }
+           indexSet.map{results[$0]} .forEach(dataContext.delete)
             
-            DispatchQueue.main.async {
-                api.Mock_DELETE_User(id: id)
-               // self.api.Mock_Get_ALL(context: dataContext)
-            }
+            let id = indexSet.map{results[$0].id}
+            print("index is: \(String(describing: id))")
+            //let id = indexSet.map{ api.mock[$0].id } .forEach(dataContext.delete)
+            api.Mock_DELETE_User(id: id)
+            
+//            DispatchQueue.main.async {
+//                api.Mock_DELETE_User(id: id)
+//               // self.api.Mock_Get_ALL(context: dataContext)
+//            }
         }
+        
+        CoreDataController().saveUserCoreData(context: dataContext)
         
     }
     
