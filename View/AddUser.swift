@@ -27,6 +27,7 @@ struct AddUser: View {
                 Button {
                     //MARK:  -TO DO add -> (Dismiss to Content View)
                     api.Mock_Post_User(user: user)
+                    
                     dismiss()
                 } label: {
                     Text("Add")
@@ -36,7 +37,7 @@ struct AddUser: View {
             
             Form {
                 Section {
-                   // TextField("Name", text: $user.name)
+                   TextField("Name", text: $user.name)
                     Toggle(isOn: $user.status) {
                         Text("Status")
                     }

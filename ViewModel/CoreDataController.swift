@@ -36,23 +36,9 @@ class CoreDataController: ObservableObject {
          return container.newBackgroundContext()
      }
  
-    
-    func addUser(context: NSManagedObjectContext){
         
-        mock.forEach { (data) in
-            let user = User(context: context)
-            user.id = data.id
-            user.name = data.name
-            user.status = data.status
-        }
-        
-        saveUser(context: context)
-        
-    }
-    
     
     func saveUserCoreData(context: NSManagedObjectContext) {
-        
         
         mock.forEach { (data) in
             let entity = User(context: context)
@@ -70,16 +56,7 @@ class CoreDataController: ObservableObject {
             print(error.localizedDescription)
         }
     }
-    
-    func saveUser(context: NSManagedObjectContext) {
-        do {
-            try context.save()
-            print("Note Saved Successfully")
-        } catch {
-            print("Unable to save the Note")
-        }
-    }
-    
+        
     
     func save() throws {
         do {
@@ -107,11 +84,6 @@ class CoreDataController: ObservableObject {
             }
             
         
-    }
-    
-    func editUser(context: NSManagedObjectContext, user: User) async throws {
-        
-        //let 
     }
     
     func removeAllData() {

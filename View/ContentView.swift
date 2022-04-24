@@ -25,7 +25,7 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             List {
-                ForEach(results, id: \.id) { user in
+                ForEach(results) { user in
                     NavigationLink(destination: EditUser(user: user)) {
                    //     UserCell(user: user) //user cell
                         UserCell1(id: user.id, name: user.name, status: user.status)
@@ -34,10 +34,12 @@ struct ContentView: View {
                 .onDelete(perform: deleteUser) //Delete item on list
             }
             .refreshable {
-               // api.Mock_Get_ALL(context: dataContext)
-                Task { [self] in
-                    await self.importData()
-                }
+//               // api.Mock_Get_ALL(context: dataContext)
+//                Task { [self] in
+//                    await self.importData()
+//                }
+                
+                api.Mock_Get_ALL()
             }
 //            ForEach(results, id: \.id) { result in
 //                UserCell1(id: result.id ?? "4" , name: result.name ?? "Owen", status: result.status)
@@ -59,13 +61,15 @@ struct ContentView: View {
         .onAppear  {
           //api.Mock_Get_ALL(context: dataContext)
             //await importData()
-            Task { [self] in
-                await self.importData()
-            }
+//            Task { [self] in
+//                await self.importData()
+//            }
+            api.Mock_Get_ALL()
             
         }
         .sheet(isPresented: $showAdd) {
           //  AddUser(user: Mock(id: "", name: "", status: false))
+          AddUser(user: User(context: dataContext))
         }
     }
     
