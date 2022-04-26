@@ -23,7 +23,7 @@ struct MockApp: App {
 //        }
 //    }
 //
-    @StateObject private var userCoreDataController = CoreDataController()
+    @ObservedObject private var userCoreDataController = CoreDataController()
     
     var body: some Scene {
         WindowGroup {

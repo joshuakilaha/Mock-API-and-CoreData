@@ -23,6 +23,10 @@ class NetworkCheck: ObservableObject {
         }
     }
     
+    var imageName: String {
+        return "wifi.slash"
+    }
+    
     init() {
         monitor.pathUpdateHandler = { path in
             DispatchQueue.main.async {
