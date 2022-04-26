@@ -19,41 +19,50 @@ struct ContentView: View {
    // @FetchRequest(sortDescriptors: [SortDescriptor(\.name, order: .reverse)]) var results: FetchedResults<User>
 
     @StateObject var api = ApiCall()
+    @ObservedObject var networkCheck = NetworkCheck()
 
     @State private var showAdd = false
     
     var body: some View {
         NavigationView {
-            List {
-                ForEach(results) { user in
-                    NavigationLink(destination: EditUser(user: user)) {
-                   //     UserCell(user: user) //user cell
-                        UserCell1(id: user.id, name: user.name, status: user.status)
-                   }
-                }
-                .onDelete(perform: deleteUser) //Delete item on list
-            }
-            .refreshable {
-//               // api.Mock_Get_ALL(context: dataContext)
-//                Task { [self] in
-//                    await self.importData()
-//                }
-                CoreDataController().removeAllData()
-                api.Mock_Get_ALL()
-            }
-//            ForEach(results, id: \.id) { result in
-//                UserCell1(id: result.id ?? "4" , name: result.name ?? "Owen", status: result.status)
-//                let _ = print("\(String(describing: result.name!))")
-//            }
-            
-            .navigationTitle("Users")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        //api.upload()
-                        showAdd.toggle()
-                    } label: {
-                        Label("add", systemImage: "plus.circle")
+            ZStack {
+                Group {
+                    if networkCheck.isConnected {
+                        List {
+                            ForEach(results) { user in
+                                NavigationLink(destination: EditUser(user: user)) {
+                               //     UserCell(user: user) //user cell
+                                    UserCell1(id: user.id, name: user.name, status: user.status)
+                               }
+                            }
+                            .onDelete(perform: deleteUser) //Delete item on list
+                        }
+                        .refreshable {
+            //               // api.Mock_Get_ALL(context: dataContext)
+            //                Task { [self] in
+            //                    await self.importData()
+            //                }
+                            CoreDataController().removeAllData()
+                            api.Mock_Get_ALL()
+                        }
+            //            ForEach(results, id: \.id) { result in
+            //                UserCell1(id: result.id ?? "4" , name: result.name ?? "Owen", status: result.status)
+            //                let _ = print("\(String(describing: result.name!))")
+            //            }
+                        
+                        .navigationTitle("Users")
+                        .toolbar {
+                            ToolbarItem(placement: .navigationBarTrailing) {
+                                Button {
+                                    //api.upload()
+                                    showAdd.toggle()
+                                } label: {
+                                    Label("add", systemImage: "plus.circle")
+                                }
+                            }
+                        }
+                    } else {
+                        Text(networkCheck.connectionDescription)
                     }
                 }
             }
