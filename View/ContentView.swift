@@ -9,138 +9,135 @@ import SwiftUI
 
 struct ContentView: View {
     
+   // @StateObject private var userViewModel = UserViewModel(userService: UserService())
+
+    @ObservedObject var coreData = CoreDataController.shared
+    // @ObservedObject var coreData: CoreDataController = CoreDataController.shared
+    
     @Environment(\.managedObjectContext) var dataContext
     
-    //var userD: User
     
-    //Fetch from CoreData
-    @FetchRequest(entity: User.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \User.id, ascending: true)]) var results: FetchedResults<User>
+        //Fetch from CoreData
+//    @FetchRequest(entity: User.entity(), sortDescriptors: [SortDescriptor(\.id, order: .reverse)]) var results: FetchedResults<User>
+ 
     
-   // @FetchRequest(sortDescriptors: [SortDescriptor(\.name, order: .reverse)]) var results: FetchedResults<User>
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.name, order: .reverse)]) private var results: FetchedResults<User>
+    
+    
+        var body: some View {
+            
+            NavigationView {
+                switch coreData.status {
+                case .success:
+                    List(results, id: \.self) { data in
+                        UserCell(name: data.name, status: data.status)
 
-    @ObservedObject var api = ApiCall()
-    @ObservedObject var networkCheck = NetworkCheck()
-
-    @State private var showAdd = false
-    
-    var body: some View {
-        NavigationView {
-            ZStack {
-                Group {
-                    if networkCheck.isConnected {
-                        List {
-                            ForEach(results) { user in
-                                NavigationLink(destination: EditUser(user: user)) {
-                               //     UserCell(user: user) //user cell
-                                    UserCell1(id: user.id, name: user.name, status: user.status)
-                               }
+                        } .refreshable {
+                            Task {
+                                //coreData.removeAllData()
+                                //coreData.doubleData()
+                                
+                                try await coreData.importUser()                                //coreData.updateDB()
                             }
-                            .onDelete(perform: deleteUser) //Delete item on list
                         }
-                        .refreshable {
-            //               // api.Mock_Get_ALL(context: dataContext)
-            //                Task { [self] in
-            //                    await self.importData()
-            //                }
-                            CoreDataController().removeAllData()
-                            api.Mock_Get_ALL()
+                        .onAppear {
+                            UIRefreshControl.appearance().tintColor = .green
+                            UIRefreshControl.appearance().attributedTitle = NSAttributedString("Refreshing…")
                         }
-            //            ForEach(results, id: \.id) { result in
-            //                UserCell1(id: result.id ?? "4" , name: result.name ?? "Owen", status: result.status)
-            //                let _ = print("\(String(describing: result.name!))")
-            //            }
-                    } else {
-                        VStack {
-                            List {
-                                ForEach(results) { user in
-                                    NavigationLink(destination: EditUser(user: user)) {
-                                        UserCell1(id: user.id, name: user.name, status: user.status)
-                                    }
-                                }
-                           // .onDelete(perform: deleteUser) //Delete item on list
-                            }
-                            HStack {
-                                
-                                Text(networkCheck.connectionDescription)
-                                Image(systemName: networkCheck.imageName)
-                                
-                                Spacer()
-                                
-                                Button {
-                                    print("checking for connection")
-                                } label: {
-                                    Text("Retry")
-                                        .padding()
-                                        .font(.headline)
-                                        .foregroundColor(Color(.systemBlue))
-                                }
-                                .frame(width: 100)
-                                .background(Color.white)
-                                .clipShape(Capsule())
-                                .padding()
-                            } .background(Color.red)
-                                .padding()
-                            
-                                
-                            
-                        }
-                    }
+                case .loading:
+                    ProgressView()
+                default:
+                    EmptyView()
                 }
+                    
+            } 
+            .task {
+                await importData()
             }
             
-            .navigationTitle("Users")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        //api.upload()
-                        showAdd.toggle()
-                    } label: {
-                        Label("add", systemImage: "plus.circle")
-                    }
-                }
-            }
-        } .navigationViewStyle(.stack)
-        .onAppear  {
-            CoreDataController().removeAllData()
-            api.Mock_Get_ALL()
-        }
-        .sheet(isPresented: $showAdd) {
-          //  AddUser(user: Mock(id: "", name: "", status: false))
-           // AddUser(user: User(from: id: "", name: "", status: false))
-        }
-    }
-    
-    //MARK: Delete
-    func deleteUser(indexSet: IndexSet){
-        withAnimation {
-           indexSet.map{results[$0]} .forEach(dataContext.delete)
-            
-            let id = indexSet.map{results[$0].id}
-            print("index is: \(String(describing: id))")
-            //let id = indexSet.map{ api.mock[$0].id } .forEach(dataContext.delete)
-            api.Mock_DELETE_User(id: id)
-            
-//            DispatchQueue.main.async {
-//                api.Mock_DELETE_User(id: id)
-//               // self.api.Mock_Get_ALL(context: dataContext)
+//            NavigationView {
+//                switch userViewModel.state {
+//                case .success(let data):
+//                    VStack {
+//                        List {
+//                            ForEach(data, id: \.id) { users in
+//                                UserCell(id: users.id, name: users.name, status: users.status)
+//                            }
+//                        } .refreshable {
+//                            Task {
+//                                await userViewModel.getUsersData()
+//                            }
+//                        }
+//                    } .navigationTitle("Users")
+//
+//                case .loading:
+//                    ProgressView()
+//                default:
+//                    EmptyView()
+//                }
 //            }
-        }
-        
-        CoreDataController().saveUserCoreData(context: dataContext)
+//            .task {
+//                await userViewModel.getUsersData()
+//            }
         
     }
-    
-    private func importData() async {
-        do {
-        try await CoreDataController().importUserCore()
-        } catch {
-           
-            print("Unable to Import Data to Core Data\(error.localizedDescription)")
+        private func importData() async {
+            do {
+                try await coreData.importUser()
+            } catch {
+                print("at import viewContent\(error.localizedDescription)")
+            }
         }
-    }
     
 }
         
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//struct ContentView: View {
+//
+//    @Environment(\.managedObjectContext) var dataContext
+//
+//
+//    //Fetch from CoreData
+//    @FetchRequest(entity: User.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \User.id, ascending: false)]) var results: FetchedResults<User>
+//
+//
+//    @StateObject var api = ApiCall()
+//    @StateObject var networkCheck = NetworkCheck()
+//    @StateObject var coreData = CoreDataController()
+//
+//    @State private var showAdd = false
+//
+//    var body: some View {
 //        NavigationView {
 //            ZStack {
 //                Group {
@@ -148,57 +145,73 @@ struct ContentView: View {
 //                        List {
 //                            ForEach(results) { user in
 //                                NavigationLink(destination: EditUser(user: user)) {
-//                               //     UserCell(user: user) //user cell
-//                                    UserCell1(id: user.id, name: user.name, status: user.status)
+//                                    UserCell(id: user.id, name: user.name, status: user.status)
 //                               }
 //                            }
 //                            .onDelete(perform: deleteUser) //Delete item on list
-//                        }
-//                        .refreshable {
-//            //               // api.Mock_Get_ALL(context: dataContext)
-//            //                Task { [self] in
-//            //                    await self.importData()
-//            //                }
-//                            CoreDataController().removeAllData()
+//                        }.refreshable{
+//                            coreData.removeAllData()
 //                            api.Mock_Get_ALL()
 //                        }
-//            //            ForEach(results, id: \.id) { result in
-//            //                UserCell1(id: result.id ?? "4" , name: result.name ?? "Owen", status: result.status)
-//            //                let _ = print("\(String(describing: result.name!))")
-//            //            }
-//
-//                        .navigationTitle("Users")
-//                        .toolbar {
-//                            ToolbarItem(placement: .navigationBarTrailing) {
-//                                Button {
-//                                    //api.upload()
-//                                    showAdd.toggle()
-//                                } label: {
-//                                    Label("add", systemImage: "plus.circle")
+//                    } else {
+//                        VStack {
+//                            List {
+//                                ForEach(results) { user in
+//                                    NavigationLink(destination: EditUser(user: user)) {
+//                                        UserCell(id: user.id, name: user.name, status: user.status)
+//                                    }
 //                                }
 //                            }
+//                            HStack {
+//
+//                                Text(networkCheck.connectionDescription)
+//                                Image(systemName: networkCheck.imageName)
+//
+//                                Spacer()
+//
+//                                Button {
+//                                    print("checking for connection")
+//                                } label: {
+//                                    Text("Retry")
+//                                        .padding()
+//                                        .font(.headline)
+//                                        .foregroundColor(Color(.systemBlue))
+//                                }
+//                                .frame(width: 100)
+//                                .background(Color.white)
+//                                .clipShape(Capsule())
+//                                .padding()
+//                            } .background(Color.red)
+//                                .padding()
 //                        }
-//                    } else {
-//                        Text(networkCheck.connectionDescription)
 //                    }
 //                }
 //            }
-//        } .navigationViewStyle(.stack)
-//        .onAppear  {
-//          //api.Mock_Get_ALL(context: dataContext)
-//            //await importData()
-////            Task { [self] in
-////                await self.importData()
-////            }
-//            CoreDataController().removeAllData()
-//            api.Mock_Get_ALL()
 //
+//            .navigationTitle("Users")
+//            .toolbar {
+//                ToolbarItem(placement: .navigationBarTrailing) {
+//                    Button {
+//                        //api.upload()
+//                        showAdd.toggle()
+//                    } label: {
+//                        Label("add", systemImage: "plus.circle")
+//                    }
+//                }
+//            }
 //        }
+//        .onAppear {
+//            coreData.removeAllData()
+//            api.Mock_Get_ALL()
+//        }
+//        .navigationViewStyle(.stack)
+//
+//
 //        .sheet(isPresented: $showAdd) {
-//          //  AddUser(user: Mock(id: "", name: "", status: false))
-//           // AddUser(user: User(from: id: "", name: "", status: false))
+//            AddUser()
 //        }
 //    }
+//
 //
 //    //MARK: Delete
 //    func deleteUser(indexSet: IndexSet){
@@ -207,22 +220,21 @@ struct ContentView: View {
 //
 //            let id = indexSet.map{results[$0].id}
 //            print("index is: \(String(describing: id))")
-//            //let id = indexSet.map{ api.mock[$0].id } .forEach(dataContext.delete)
+//
 //            api.Mock_DELETE_User(id: id)
 //
-////            DispatchQueue.main.async {
-////                api.Mock_DELETE_User(id: id)
-////               // self.api.Mock_Get_ALL(context: dataContext)
-////            }
-//        }
-//
-//        CoreDataController().saveUserCoreData(context: dataContext)
-//
+//        CoreDataController().saveUser(context: dataContext)
 //    }
 //}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
-}
+//
+//
+//    private func importData() async {
+//        do {
+//        try await CoreDataController().importUserCore()
+//        } catch {
+//
+//            print("Unable to Import Data to Core Data\(error.localizedDescription)")
+//        }
+//    }
+//
+//}

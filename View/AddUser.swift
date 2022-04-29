@@ -9,10 +9,13 @@ import SwiftUI
 
 struct AddUser: View {
     
+    @Environment(\.managedObjectContext) var managedObjContext
     @Environment(\.dismiss) var dismiss
     
-    @StateObject var api = ApiCall()
-    @State var user: User
+   //@State var user: User
+    
+    @State var  name = ""
+    @State var  status: Bool = true
     
     var body: some View {
         VStack{
@@ -26,8 +29,11 @@ struct AddUser: View {
                 
                 Button {
                     //MARK:  -TO DO add -> (Dismiss to Content View)
-                    api.Mock_Post_User(user: user)
+                    //api.Mock_Post_User(user: user)
                     
+                    CoreDataController().addUser(context: managedObjContext, name: name, status: status)
+                    //CoreDataController().removeAllData()
+                    ApiCall().Mock_Get_ALL()
                     dismiss()
                 } label: {
                     Text("Add")
@@ -37,8 +43,8 @@ struct AddUser: View {
             
             Form {
                 Section {
-                   TextField("Name", text: $user.name)
-                    Toggle(isOn: $user.status) {
+                    TextField("Name", text: $name)
+                    Toggle(isOn: $status) {
                         Text("Status")
                     }
                     

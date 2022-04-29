@@ -9,32 +9,30 @@ import SwiftUI
 
 struct EditUser: View {
     
+    @Environment(\.managedObjectContext) var coreData
     @Environment(\.dismiss) var dismiss
     
     @StateObject var api = ApiCall()
     
-    @State private var id = ""
-    @State private var name = ""
-    @State private var status: Bool = true
-   // @State var user: Mock
-    
-   // var user: FetchedResults<User>.Element
-    @State var user: User
+    @State  var id = ""
+    @State  var name = ""
+    @State  var status: Bool = true
+
+    //@State var user: User
     
     @State private var statusToggle: Bool = true
+
     
-//    @State var name = ""
-//    @State var status = ""
+    var user: FetchedResults<User>.Element
     
     var body: some View {
         NavigationView {
             
             Form {
                 Section(header: Text("Edit User")) {
-                    //TextField("Name", text: $user.name)
-                    TextField("Name", text: $user.name)
+                    TextField("Name", text: $name)
                     
-                    Toggle(isOn: $user.status) {
+                    Toggle(isOn: $status) {
                         Text("Status")
                     }
                 }
@@ -42,6 +40,7 @@ struct EditUser: View {
 
         }
         .onAppear{
+            print("\(String(describing: user))")
             id = user.id
             name = user.name
             status = user.status
@@ -50,8 +49,8 @@ struct EditUser: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
                     //MARK:  -TO DO add -> (Dismiss to Content View)
-                    //api.Mock_UPDATE_User(user: user, id: user.id!)
-                    api.Mock_UPDATE_User(user: user, id: id)
+                   // api.Mock_UPDATE_User(user: user, id: id)
+                    CoreDataController().editUser(context: coreData, user: user, name: name, status: status, id: id)
                     dismiss()
                 } label: {
                     Label("Update", systemImage: "person.crop.circle.badge.checkmark")
@@ -61,10 +60,3 @@ struct EditUser: View {
     }
     
 }
-
-//struct EditUser_Previews: PreviewProvider {
-//    static var previews: some View {
-//        //EditUser(user: Mock(id: "1", name: "john", status: true ))
-//        EditUser(user: us)
-//    }
-//}

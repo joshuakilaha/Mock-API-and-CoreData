@@ -10,10 +10,10 @@ import CoreData
 
 class ApiCall: ObservableObject {
     
-     var userCoreData = CoreDataController()
+    @Published var userCoreData = CoreDataController()
     
     @Published var mock = [Mock]()
-    @Published var userD = [User]()
+    @Published var user = [User]()
     
     enum NetworkError: Error {
         case badUrl
@@ -22,7 +22,9 @@ class ApiCall: ObservableObject {
     
     
     //MARK: GET Request
-    func Mock_Get_ALL() {
+    func Mock_Get_ALL()  {
+        
+       // self.userCoreData.removeAllData() //remove all data from DB
         
         guard let url = URL(string: "https://625f27a5873d6798e2b38701.mockapi.io/details") else {
             print("Invalid URL!!")
@@ -30,42 +32,24 @@ class ApiCall: ObservableObject {
         }
         
         
-        
-//        let data = //raw json data in Data object
-//        let context = persistentContainer.newBackgroundContext()
-//        let decoder = JSONDecoder()
-//        decoder.userInfo[.context] = context
-//
-//        _ = try decoder.decode(MyManagedObject.self, from: data) //we'll get the value from another context using a fetch request later...
-//
-//        try context.save() //make sure to save your data once decoding is complete
-        
-        
-        
-        let task = URLSession.shared.dataTask(with: url) { data, _, error in
+        let task =  URLSession.shared.dataTask(with: url) { data, _, error in
             guard let data1 = data, error == nil else {
                 return
             }
             
             do {
-               
                 let context = self.userCoreData.backgroundContext
                 let decoder = JSONDecoder()
                 decoder.userInfo[.context] = context
                 
-                _ = try decoder.decode([User].self, from: data1)
+               let encodedData = try decoder.decode([User].self, from: data1)
+                
+                DispatchQueue.main.async {
+                    self.user = encodedData
+                }
+                
                 try context.save()
                 
-              //  let mockDecoded = try JSONDecoder().decode([User].self, from: data1)
-                
-
-//                DispatchQueue.main.async {
-//                    self.userD = mockDecoded
-//                    //  self.userCoreData.saveUserCoreData(context: context)
-//
-//
-//                }
-//
             } catch {
                 //print("Something went wrong")
                 // print(error.localizedDescription)
@@ -74,6 +58,19 @@ class ApiCall: ObservableObject {
         }
         task.resume()
     }
+    
+//    func fetchPosts() async {
+//      let request = URLRequest(url: URL(string: "https://jsonplaceholder.typicode.com/comments")!)
+//      let (data, _) = try! await URLSession.shared.data(for: request)
+//
+//      let data1 = try? JSONDecoder().decode([Post].self, from: data)
+//      guard let album = data1 else { return }
+//
+//      posts.append(contentsOf: album)
+//    }
+//  }
+    
+
 //    func Mock_Get_ALL(context: NSManagedObjectContext) async{
 //
 //        guard let url = URL(string: "https://625f27a5873d6798e2b38701.mockapi.io/details") else {
@@ -196,6 +193,7 @@ class ApiCall: ObservableObject {
                 return
             }
             print(data, String(data: data, encoding: .utf8) ?? "*unknown encoding*")
+            //let userId = String(data: data.id, encoding: .utf8)
             
         }.resume()
         

@@ -9,26 +9,16 @@ import SwiftUI
 
 @main
 struct MockApp: App {
-//    init(){
-//        Task { [self] in
-//            await self.importData()
-//        }
-//    }
-//
-//    private func importData() async {
-//        do {
-//            try await CoreDataController.shared.importUserCore()
-//        } catch {
-//            print(error)
-//        }
-//    }
-//
-    @ObservedObject private var userCoreDataController = CoreDataController()
+    
+    
+    @ObservedObject var userCoreDataController = CoreDataController.shared
+    
     
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environment(\.managedObjectContext, userCoreDataController.container.viewContext)
+                
         }
     }
 }
