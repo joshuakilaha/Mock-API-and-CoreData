@@ -227,11 +227,17 @@ class CoreDataController: ObservableObject {
         user.status = status
         
         let responseUserPost = try await userService.upload(user: user)
-        print(responseUserPost)
+        //print(responseUserPost, String(data: responseUserPost, encoding: .utf8)!)
+        let userData = try JSONDecoder().decode(Mock.self, from: responseUserPost)
+        //print(userData)
+        
+        user.id = userData.id
+//        user.name = userData.name
+//        user.status = userData.status
         
         //user.id = responseUserPost.id
         
-        print(user)
+        //print(user)
     }
     
     
