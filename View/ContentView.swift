@@ -16,6 +16,7 @@ struct ContentView: View {
     
     @Environment(\.managedObjectContext) var dataContext
     
+    @State private var showAdd = false
     
         //Fetch from CoreData
 //    @FetchRequest(entity: User.entity(), sortDescriptors: [SortDescriptor(\.id, order: .reverse)]) var results: FetchedResults<User>
@@ -33,10 +34,14 @@ struct ContentView: View {
                 case .success:
                     VStack {
                         List(results, id: \.self) { data in
-                            UserCell(name: data.name, status: data.status)
-
+                            NavigationLink(destination: EditUser(user: data)) {
+                                UserCell(name: data.name, status: data.status)
+                                let _ = print(String(describing: data))
+                                }
                             } .refreshable {
                                 Task {
+                                    //coreData.removeAllData()
+                                   // try await coreData.useradd(context: dataContext, name: "Pius", status: true)
                                     try await coreData.importUser()                                //coreData.updateDB()
                                 }
                             }
@@ -45,6 +50,16 @@ struct ContentView: View {
                                 UIRefreshControl.appearance().attributedTitle = NSAttributedString("Refreshing…")
                             }
                     } .navigationTitle("Users")
+                        .toolbar {
+                            ToolbarItem(placement: .navigationBarTrailing) {
+                                Button {
+                                    //api.upload()
+                                    showAdd.toggle()
+                                } label: {
+                                    Label("add", systemImage: "plus.circle")
+                                }
+                            }
+                        }
                 case .loading:
                     ProgressView()
                 default:
@@ -56,39 +71,17 @@ struct ContentView: View {
                 await importData()
             }
             
-//            NavigationView {
-//                switch userViewModel.state {
-//                case .success(let data):
-//                    VStack {
-//                        List {
-//                            ForEach(data, id: \.id) { users in
-//                                UserCell(id: users.id, name: users.name, status: users.status)
-//                            }
-//                        } .refreshable {
-//                            Task {
-//                                await userViewModel.getUsersData()
-//                            }
-//                        }
-//                    } .navigationTitle("Users")
-//
-//                case .loading:
-//                    ProgressView()
-//                default:
-//                    EmptyView()
-//                }
-//            }
-//            .task {
-//                await userViewModel.getUsersData()
-//            }
-        
-    }
-        private func importData() async {
-            do {
-                try await coreData.importUser()
-            } catch {
-                print("at import viewContent\(error.localizedDescription)")
+            .sheet(isPresented: $showAdd) {
+                AddUser()
             }
+    }
+    private func importData() async {
+        do {
+            try await coreData.importUser()
+        } catch {
+            print("at import viewContent\(error.localizedDescription)")
         }
+    }
     
 }
         

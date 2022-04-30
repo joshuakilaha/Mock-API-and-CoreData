@@ -220,6 +220,21 @@ class CoreDataController: ObservableObject {
     }
     
     
+    func useradd(context: NSManagedObjectContext, name:String, status: Bool) async  throws{
+        
+        let user = User(context: context)
+        user.name = name
+        user.status = status
+        
+        let responseUserPost = try await userService.upload(user: user)
+        print(responseUserPost)
+        
+        //user.id = responseUserPost.id
+        
+        print(user)
+    }
+    
+    
     func editUser(context: NSManagedObjectContext, user: User, name: String, status: Bool, id: String) {
         
         user.id = id

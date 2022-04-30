@@ -12,6 +12,8 @@ struct AddUser: View {
     @Environment(\.managedObjectContext) var managedObjContext
     @Environment(\.dismiss) var dismiss
     
+    @ObservedObject var coreData = CoreDataController.shared
+    
    //@State var user: User
     
     @State var  name = ""
@@ -31,9 +33,12 @@ struct AddUser: View {
                     //MARK:  -TO DO add -> (Dismiss to Content View)
                     //api.Mock_Post_User(user: user)
                     
-                    CoreDataController().addUser(context: managedObjContext, name: name, status: status)
-                    //CoreDataController().removeAllData()
-                    ApiCall().Mock_Get_ALL()
+//                    CoreDataController().addUser(context: managedObjContext, name: name, status: status)
+//                    //CoreDataController().removeAllData()
+//                    ApiCall().Mock_Get_ALL()
+                    Task {
+                        try await coreData.useradd(context:managedObjContext, name: name, status: status)
+                    }
                     dismiss()
                 } label: {
                     Text("Add")
