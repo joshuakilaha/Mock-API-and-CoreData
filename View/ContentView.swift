@@ -27,23 +27,24 @@ struct ContentView: View {
         var body: some View {
             
             NavigationView {
+                
+                
                 switch coreData.status {
                 case .success:
-                    List(results, id: \.self) { data in
-                        UserCell(name: data.name, status: data.status)
+                    VStack {
+                        List(results, id: \.self) { data in
+                            UserCell(name: data.name, status: data.status)
 
-                        } .refreshable {
-                            Task {
-                                //coreData.removeAllData()
-                                //coreData.doubleData()
-                                
-                                try await coreData.importUser()                                //coreData.updateDB()
+                            } .refreshable {
+                                Task {
+                                    try await coreData.importUser()                                //coreData.updateDB()
+                                }
                             }
-                        }
-                        .onAppear {
-                            UIRefreshControl.appearance().tintColor = .green
-                            UIRefreshControl.appearance().attributedTitle = NSAttributedString("Refreshing…")
-                        }
+                            .onAppear {
+                                UIRefreshControl.appearance().tintColor = .green
+                                UIRefreshControl.appearance().attributedTitle = NSAttributedString("Refreshing…")
+                            }
+                    } .navigationTitle("Users")
                 case .loading:
                     ProgressView()
                 default:
