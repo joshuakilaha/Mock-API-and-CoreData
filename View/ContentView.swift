@@ -10,7 +10,9 @@ import SwiftUI
 struct ContentView: View {
     
     @Environment(\.managedObjectContext) var dataContext
+    @ObservedObject private var networkManager = NetworkManager()
     
+    //WARNING Issue solved here: https://twitter.com/andresr_develop/status/1509287460961927186?s=21
     @StateObject var coreData = CoreDataController.shared //observe state from CoreData
     
     @State private var showAdd = false //View Presentation to AddView
@@ -31,15 +33,21 @@ struct ContentView: View {
                                 }
                             } .onDelete(perform: deleteUser)
                         }
+                        
                         .refreshable {
                                 Task {
                                     try await coreData.importUser()
                                 }
                             }
-                            .onAppear {
+                        .onAppear {
                                 UIRefreshControl.appearance().tintColor = .green
                                 UIRefreshControl.appearance().attributedTitle = NSAttributedString("Refreshing…")
-                            }
+                        }
+                        
+                        //Check network Connection
+                        if networkManager.isConnected {
+                            NetworkRetryView(netStatus: networkManager.connectionDescription, image: networkManager.imageName)
+                        }
                     } .navigationTitle("Users")
                         .toolbar {
                             ToolbarItem(placement: .navigationBarTrailing) {
