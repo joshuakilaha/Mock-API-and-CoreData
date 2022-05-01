@@ -50,3 +50,9 @@ Using Mock API https://mockapi.io to perform CRUD operations on SwiftUI 3 and sa
 <img src ="https://user-images.githubusercontent.com/33428918/166156042-513fefa3-d1b2-48b7-b07b-0d95e8f109fd.PNG" width="250" height="450" />
 <img src ="https://user-images.githubusercontent.com/33428918/166156038-027470e9-ea79-49eb-9578-b3bc88988c38.PNG" width="250" height="450" />
 </p>
+
+## Network Check 
+
+<p float="left">
+<img src ="https://user-images.githubusercontent.com/33428918/166156528-b5c0e5a2-1c6c-491f-bce4-194789802998.PNG" width="250" height="450" />
+</p>
