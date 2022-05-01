@@ -68,6 +68,11 @@ struct ContentView: View {
                                     Label("add", systemImage: "plus.circle")
                                 }
                             }
+                            
+                            //MARK: -Edit button for Delete
+                            ToolbarItem(placement: .navigationBarLeading) {
+                                EditButton()
+                            }
                         }
                 case .loading:
                     ProgressView()
