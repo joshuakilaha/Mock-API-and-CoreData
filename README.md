@@ -1,5 +1,4 @@
 # Mock API with CoreData
-Testing api Data with CRUD operations
 
 Using Mock API https://mockapi.io to perform CRUD operations on SwiftUI 3 and save Data to CoreData
 
