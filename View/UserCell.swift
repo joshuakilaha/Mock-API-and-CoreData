@@ -9,7 +9,6 @@ import SwiftUI
 
 struct UserCell: View {
     
-   // var id: String
     var name: String
     var status: Bool
 

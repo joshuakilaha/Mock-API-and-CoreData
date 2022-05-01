@@ -14,7 +14,6 @@ struct AddUser: View {
     
     @ObservedObject var coreData = CoreDataController.shared
     
-   //@State var user: User
     
     @State var  name = ""
     @State var  status: Bool = true
@@ -30,12 +29,6 @@ struct AddUser: View {
                 Spacer()
                 
                 Button {
-                    //MARK:  -TO DO add -> (Dismiss to Content View)
-                    //api.Mock_Post_User(user: user)
-                    
-//                    CoreDataController().addUser(context: managedObjContext, name: name, status: status)
-//                    //CoreDataController().removeAllData()
-//                    ApiCall().Mock_Get_ALL()
                     Task {
                         try await coreData.useradd(context:managedObjContext, name: name, status: status)
                     }

@@ -12,8 +12,6 @@ struct EditUser: View {
     @Environment(\.managedObjectContext) var coreData
     @Environment(\.dismiss) var dismiss
     
-    @StateObject var api = ApiCall()
-    
     var coreDataEdit = CoreDataController.shared
     
     @State  var id = ""

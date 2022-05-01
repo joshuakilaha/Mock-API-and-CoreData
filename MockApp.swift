@@ -10,10 +10,8 @@ import SwiftUI
 @main
 struct MockApp: App {
     
-    
     @ObservedObject var userCoreDataController = CoreDataController.shared
-    
-    
+        
     var body: some Scene {
         WindowGroup {
             ContentView()
