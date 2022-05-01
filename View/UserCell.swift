@@ -9,18 +9,16 @@ import SwiftUI
 
 struct UserCell: View {
     
-    @State var user: Mock
-    
-    @State private var name = ""
-    @State private var status: Bool = true
-    
+    var name: String
+    var status: Bool
+
     var body: some View {
-        
+
         VStack(alignment: .leading, spacing: 10 ){
-            Text(user.name)
+            Text(name)
                 .font(.title2)
                 .fontWeight(.semibold)
-            if user.status == true {
+            if status == true {
                 Text("Active")
                     .font(.title3)
                     .fontWeight(.light)
@@ -34,12 +32,5 @@ struct UserCell: View {
                     .italic()
             }
         }
-    }
-    
-}
-
-struct UserCell_Previews: PreviewProvider {
-    static var previews: some View {
-        UserCell(user: Mock(id: "4", name: "John Cena", status: false))
     }
 }
