@@ -40,10 +40,6 @@ class UserService {
             return encodedData
     }
     
-    
-    
-//    struct DataUploader {
-        var session = URLSession.shared
 
         func upload(user: User) async throws -> Data {
             
@@ -62,7 +58,7 @@ class UserService {
             request.httpBody = userEncoded // Set HTTP Request Body
             
 
-            let (data, response) = try await session.upload(for: request, from: userEncoded)
+            let (data, response) = try await URLSession.shared.upload(for: request, from: userEncoded)
             
             //check the if the response is valid
 //            guard let response = response as? HTTPURLResponse,
@@ -77,6 +73,32 @@ class UserService {
             //print(String(describing: response))
             return data
                         
+        }
+    
+    
+    func updateUser(user: User, id: String) async throws -> Data {
+            
+            //get URL
+            guard let url = URL(string: APIConstants.baseURL.appending("/\(id)")) else {
+                throw NetworkError.invalidURL
+            }
+            
+            //get encoded data
+           guard let encodedData = try? JSONEncoder().encode(user) else {
+                throw NetworkError.failedToEncode
+            }
+            
+            //HTTP Request
+            var request = URLRequest(url: url)
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpMethod = "PUT"
+            request.httpBody = encodedData
+            
+            //URL Session
+            let (data, _) = try await URLSession.shared.upload(for: request, from: encodedData)
+            
+            return data
+            
         }
 
 }

@@ -237,9 +237,23 @@ class CoreDataController: ObservableObject {
         
         //user.id = responseUserPost.id
         
-        //print(user)
+        print(userData.id)
     }
     
+    func editUserCoreData(context: NSManagedObjectContext, user: User, id: String, name: String, status: Bool) async throws {
+            
+            let user = User(context: context)
+            
+            user.id = id
+            user.name = name
+            user.status = status
+            
+            //get post User Service
+            let updatedUser = try await userService.updateUser(user: user, id: id)
+        print(updatedUser, String(data: updatedUser, encoding: .utf8)!)
+            try save()
+            
+        }
     
     func editUser(context: NSManagedObjectContext, user: User, name: String, status: Bool, id: String) {
         

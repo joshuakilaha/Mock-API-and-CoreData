@@ -36,7 +36,7 @@ struct ContentView: View {
                         List(results, id: \.self) { data in
                             NavigationLink(destination: EditUser(user: data)) {
                                 UserCell(name: data.name, status: data.status)
-                                let _ = print(String(describing: data))
+                                //let _ = print(String(describing: data))
                                 }
                             } .refreshable {
                                 Task {
@@ -66,7 +66,8 @@ struct ContentView: View {
                     EmptyView()
                 }
                     
-            } 
+            }
+            .navigationViewStyle(.stack)
             .task {
                 await importData()
             }

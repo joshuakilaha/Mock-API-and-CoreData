@@ -14,11 +14,11 @@ struct EditUser: View {
     
     @StateObject var api = ApiCall()
     
+    var coreDataEdit = CoreDataController.shared
+    
     @State  var id = ""
     @State  var name = ""
     @State  var status: Bool = true
-
-    //@State var user: User
     
     @State private var statusToggle: Bool = true
 
@@ -49,8 +49,9 @@ struct EditUser: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
                     //MARK:  -TO DO add -> (Dismiss to Content View)
-                   // api.Mock_UPDATE_User(user: user, id: id)
-                    CoreDataController().editUser(context: coreData, user: user, name: name, status: status, id: id)
+                    Task {
+                        try await coreDataEdit.editUserCoreData(context: coreData, user: user, id: id, name: name, status: status)
+                    }
                     dismiss()
                 } label: {
                     Label("Update", systemImage: "person.crop.circle.badge.checkmark")
