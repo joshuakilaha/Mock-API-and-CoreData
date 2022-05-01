@@ -255,6 +255,16 @@ class CoreDataController: ObservableObject {
             
         }
     
+    func deleteUser(context: NSManagedObjectContext) async throws {
+        
+        let user = User(context: context)
+        let idDeleted = try await userService.deleteUser(id: user.id)
+        print(idDeleted, String(data: idDeleted, encoding: .utf8)!)
+        
+        try save()
+        
+    }
+    
     func editUser(context: NSManagedObjectContext, user: User, name: String, status: Bool, id: String) {
         
         user.id = id

@@ -33,12 +33,21 @@ struct ContentView: View {
                 switch coreData.status {
                 case .success:
                     VStack {
-                        List(results, id: \.self) { data in
-                            NavigationLink(destination: EditUser(user: data)) {
-                                UserCell(name: data.name, status: data.status)
-                                //let _ = print(String(describing: data))
+//                        List(results, id: \.self) { data in
+//                            NavigationLink(destination: EditUser(user: data)) {
+//                                UserCell(name: data.name, status: data.status)
+//                                //let _ = print(String(describing: data))
+//                                }
+//                            }
+                        List {
+                            ForEach(results, id: \.self) { data in
+                                NavigationLink(destination: EditUser(user: data)) {
+                                    UserCell(name: data.name, status: data.status)
                                 }
-                            } .refreshable {
+                            } .onDelete(perform: deleteUser)
+                        }
+                        
+                        .refreshable {
                                 Task {
                                     //coreData.removeAllData()
                                    // try await coreData.useradd(context: dataContext, name: "Pius", status: true)
@@ -76,6 +85,20 @@ struct ContentView: View {
                 AddUser()
             }
     }
+        
+        //MARK: Delete
+        func deleteUser(indexSet: IndexSet){
+            withAnimation {
+               indexSet.map{results[$0]} .forEach(dataContext.delete)
+
+                let id = indexSet.map{results[$0].id}
+                print("index is: \(String(describing: id))")
+                UserService().Mock_DELETE_User(id: id)
+        }
+            CoreDataController().saveUser(context: dataContext)
+    }
+    
+    
     private func importData() async {
         do {
             try await coreData.importUser()

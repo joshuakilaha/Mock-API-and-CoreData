@@ -100,5 +100,59 @@ class UserService {
             return data
             
         }
+    
+    //MARK: DELETE
+    
+    func deleteUser(id: String) async throws -> Data {
+        
+        //get URL
+        guard let url = URL(string: APIConstants.baseURL.appending("/\(id)")) else {
+            throw NetworkError.invalidURL
+        }
+        
+        //get the request
+        var request = URLRequest(url: url)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "DELETE"
+        
+        //URLSession
+        let (data, _) = try await URLSession.shared.data(for: request)
+            
+        return data
+    }
+    
+    func Mock_DELETE_User(id: [String]) {
 
+        print(id)
+        let joinId = id.joined(separator: "")
+        print(joinId)
+        
+        //let user = 5
+        //let id = 3
+        guard let url = URL(string: APIConstants.baseURL.appending("/\(joinId)")) else {
+            //throw NetworkError.invalidURL
+            print("Error deleting user")
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "DELETE"
+
+        URLSession.shared.dataTask(with: request){
+            (data, response, error) in
+            print(response as Any)
+            if let error = error {
+                print(error.localizedDescription)
+                debugPrint(error)
+                return
+            }
+//            guard let data = data else {
+//                return
+//            }
+            print("Successfully Deleted!!")
+        }.resume()
+
+
+    }
 }
